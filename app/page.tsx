@@ -1,45 +1,52 @@
 "use client";
 import { useEffect, useState } from "react";
-import Character from "./character";
-
-async function loadCharacters(){
-  const response = await fetch("https://rickandmortyapi.com/api/character");
-  const data = await response.json();
-  console.log(data);
+import "./globals.css"
+export default function Home() {
+  const [cars, setCars] = useState([]);
+  const [car, setCar] = useState({});
+const carOnClick = (id) =>{
+console.log(id);
+fetch(`/api/cars/${id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setCar(data);
+      });
+}
+  useEffect(() => {
+    fetch("/api/cars")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setCars(data);
+      });
+  }, []);
+const tempCars = () =>{
+if(cars.length==0){
+return <div>Ładaownie...</div>
+      }else{
+        return (cars.map((car) => (
+        <button key={car.id} className="car" onClick={()=>carOnClick(car.id)}>
+          <img src={car.miniatura} alt="" />
+          <p>{car.marka} {car.model}</p>
+          <p>{car.rok}</p>
+          <p>{car.cena}</p>
+          <p>{car.przebieg}</p>
+        </button>
+      )))
+      }
 }
 
 
 
-export default function Home() {
-  const [count, setCount] = useState(0);
-  const [pressButton, setPressButton] = useState(false);
-  const [characters, setCharacters] = useState([]);
-  function kliki() {
-    setCount(count + 1);
-  }
-
-  useEffect(() => {
-    fetch("https://rickandmortyapi.com/api/character")
-      .then((r) => r.json())
-      .then((f) => {
-        console.log(f.results);
-        setCharacters(f.results);
-        console.log(characters);
-      });
-    // loadCharacters()
-  }, []);
-
-  useEffect(() => {
-    console.log("1" + count);
-  }, [count]);
-
-  const button = <button onClick={kliki}>nowy przyciak</button>;
   return (
     <div>
-      {characters.map((char) => (
-        <Character 
-        values={char} />
-      ))}
+{car? 
+<div className="overlay">
+  <div className="popup">{car.marka}{car.model}</div>
+</div>
+:""}
+    {tempCars()}
     </div>
   );
 }
