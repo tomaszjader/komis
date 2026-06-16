@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import cars from "@/data/cars.json"
-import { error } from "console";
 
 export async function GET(request, { params }) {
     const { id }  = await params;
